@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using ParsingLib;
 using ParsingLib.Contract;
 
@@ -24,13 +24,13 @@ namespace TextParsingLibPOC
             var host = args.BoostrapApplication(explicitConfigVals).Build();
 
             //Get the manager interface handle.
-            var manager = host.Services.GetRequiredService<ITextParseManager>();
+            var _log = host.Services.GetRequiredService<ILogger<Program>>();
+            var _manager = host.Services.GetRequiredService<ITextParseManager>();
 
             //DO WORK!!!
-
-            Console.WriteLine("Parsing text file stream now....");
+            _log.LogInformation("Parsing text file stream now....");
             //Example using text file stream
-            var result = await manager.ParseTextFromSource(new ParseStreamRequest
+            var result = await _manager.ParseTextFromSource(new ParseStreamRequest
             {
                 SourceFormat = TextSourceType.RawTextLines,
                 MimeType = "text/plain",
@@ -39,9 +39,9 @@ namespace TextParsingLibPOC
                 RawData = assembly.GetManifestResourceStream("TextParsingLibPOC.test1.txt")
             });
 
-            Console.WriteLine("Parsing Excel file stream now....");
+            _log.LogInformation("Parsing Excel file stream now....");
             //Example using excel file stream
-            var result2 = await manager.ParseTextFromSource(new ParseStreamRequest
+            var result2 = await _manager.ParseTextFromSource(new ParseStreamRequest
             {
                 SourceFormat = TextSourceType.ExcelFile,
                 //MimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -51,9 +51,9 @@ namespace TextParsingLibPOC
                 RawData = assembly.GetManifestResourceStream("TextParsingLibPOC.test1.xlsx")
             });
 
-            Console.WriteLine("Parsing Pdf file stream now....");
+            _log.LogInformation("Parsing Pdf file stream now....");
             //Example using pdf file stream
-            var result3 = await manager.ParseTextFromSource(new ParseStreamRequest
+            var result3 = await _manager.ParseTextFromSource(new ParseStreamRequest
             {
                 SourceFormat = TextSourceType.PdfFile,
                 MimeType = "application/pdf",
@@ -61,6 +61,9 @@ namespace TextParsingLibPOC
                 FileName = "test.pdf",
                 RawData = assembly.GetManifestResourceStream("TextParsingLibPOC.test1.pdf")
             });
+
+            Console.WriteLine("Now to display the results...");
+            Console.WriteLine();
 
             OutputResults(result);
             Console.WriteLine();
