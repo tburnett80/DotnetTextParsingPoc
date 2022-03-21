@@ -6,7 +6,8 @@ namespace ParsingLib
     {
         RawTextLines = 0,
         ExcelFile = 1,
-        PdfFile = 2
+        PdfFile = 2,
+        WordDoc = 3,
     }
 
     public abstract class ParseRequest

@@ -48,10 +48,12 @@ namespace ParsingLib
             if (services == null)
                 services = new ServiceCollection();
 
+            //Wire up service definitions.
             services.AddSingleton<IConfiguration>(explicitConfig.BootstrapConfiguration())
                     .AddScoped<IRawTextLineParsingEngine, RawTextLineParsingEngine>()
                     .AddScoped<IExcelParsingEngine, ExcelParsingEngine>()
                     .AddScoped<IPdfFileTextParsingEngine, PdfFileTextParsingEngine>()
+                    .AddScoped<IWordDocTextParsingEngine, WordDocTextParsingEngine>()
                     .AddScoped<ITextParseManager, TextParseManager>();
 
             return services;

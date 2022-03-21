@@ -12,9 +12,10 @@ namespace ParsingLib.Managers
         private readonly IRawTextLineParsingEngine _rawTextEngine; 
         private readonly IExcelParsingEngine _excelTextEngine;
         private readonly IPdfFileTextParsingEngine _pdfTextEngine;
+        private readonly IWordDocTextParsingEngine _wordTextEngine;
 
         public TextParseManager(ILogger<TextParseManager> log, IRawTextLineParsingEngine rawTextEngine, 
-            IExcelParsingEngine excelTextEngine, IPdfFileTextParsingEngine pdfTextEngine)
+            IExcelParsingEngine excelTextEngine, IPdfFileTextParsingEngine pdfTextEngine, IWordDocTextParsingEngine wordTextEngine)
         {
             _log = log
                 ?? throw new ArgumentNullException(nameof(log));
@@ -27,6 +28,9 @@ namespace ParsingLib.Managers
 
             _pdfTextEngine = pdfTextEngine
                 ?? throw new ArgumentNullException(nameof(pdfTextEngine));
+
+            _wordTextEngine = wordTextEngine
+                ?? throw new ArgumentNullException(nameof(wordTextEngine));
         }
         #endregion
 
@@ -63,6 +67,12 @@ namespace ParsingLib.Managers
                         result = await _rawTextEngine.ParseRawTextLines(request);
                         if (result.IsFailure)
                             _log.LogError("Raw Text Parsing failed.");
+                        break;
+                    case TextSourceType.WordDoc:
+                        _log.LogInformation("Starting Word Doc file parse...");
+                        result = await _wordTextEngine.ParseDocTextLines(request);
+                        if (result.IsFailure)
+                            _log.LogError("Word Doc Parsing failed.");
                         break;
                     default:
                         throw new ArgumentOutOfRangeException("ParseRequest.SourceFormat");
