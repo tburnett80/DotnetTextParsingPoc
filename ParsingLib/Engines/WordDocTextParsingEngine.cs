@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ParsingLib.Engines
@@ -34,10 +33,13 @@ namespace ParsingLib.Engines
 
             try
             {
-                //The word file as a DataSet
-                result.Data.Pages = request.GetType() == typeof(ParseStreamRequest)
+                //The word file as a collection of paragraphs.
+                var paragraphs = request.GetType() == typeof(ParseStreamRequest)
                     ? await ParseDocStream((request as ParseStreamRequest).RawData)
                     : await ParseDocBytes((request as ParseByteRequest).RawData);
+
+                var page = result.Data.AddNewPage(paragraphs);
+                _log.LogInformation($"Parsed '{page.LineCount}' Lines for page named: '{page.PageName}'.");
             }
             catch(Exception ex)
             {
@@ -47,7 +49,7 @@ namespace ParsingLib.Engines
                 result.Exception = ex;
             }
 
-            return await Task.FromResult(result);
+            return result;
         }
 
         #region Private Methods
@@ -56,24 +58,17 @@ namespace ParsingLib.Engines
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        private async Task<IEnumerable<ParsedPage>> ParseDocStream(Stream data)
+        private async Task<IEnumerable<string>> ParseDocStream(Stream data)
         {
             _log.LogInformation("Parsing text stream into lines...");
             var parsed = new List<ParsedPage>();
             using (var doc = WordprocessingDocument.Open(data, false))
             {
-                //TODO: Parse out pages
-
-                //foreach (var pdfPage in pdf.GetPages())
-                //    parsed.Add(new ParsedPage
-                //    {
-                //        PageName = $"Page {pdfPage.Number}",
-                //        Lines = pdfPage.Text.Split('\n')
-
-                //    });
+                //Parse out pages
+                return await Task.FromResult(doc.MainDocumentPart.Document.Body.ChildElements
+                    .Where(c => c.InnerText.HasValue())
+                    .Select(c => c.InnerText));
             }
-
-            return await Task.FromResult(parsed);
         }
 
         /// <summary>
@@ -81,7 +76,7 @@ namespace ParsingLib.Engines
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        private async Task<IEnumerable<ParsedPage>> ParseDocBytes(byte[] data)
+        private async Task<IEnumerable<string>> ParseDocBytes(byte[] data)
         {
             _log.LogInformation("Converting Byte data to stream for parsing...");
             using (var ms = new MemoryStream(data))

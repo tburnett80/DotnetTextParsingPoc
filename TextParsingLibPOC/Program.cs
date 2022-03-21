@@ -28,39 +28,52 @@ namespace TextParsingLibPOC
             var _manager = host.Services.GetRequiredService<ITextParseManager>();
 
             //DO WORK!!!
-            _log.LogInformation("Parsing text file stream now....");
+
+            _log.LogInformation("Parsing Word Doc file stream now....");
             //Example using text file stream
             var result = await _manager.ParseTextFromSource(new ParseStreamRequest
             {
-                SourceFormat = TextSourceType.RawTextLines,
-                MimeType = "text/plain",
-                FileExtension = ".txt",
-                FileName = "test1.txt",
-                RawData = assembly.GetManifestResourceStream("TextParsingLibPOC.test1.txt")
+                SourceFormat = TextSourceType.WordDoc,
+                //MimeType = "application/msword",
+                MimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                FileExtension = ".docx",
+                FileName = "test1.docx",
+                RawData = assembly.GetManifestResourceStream("TextParsingLibPOC.test1.docx")
             });
 
-            _log.LogInformation("Parsing Excel file stream now....");
-            //Example using excel file stream
-            var result2 = await _manager.ParseTextFromSource(new ParseStreamRequest
-            {
-                SourceFormat = TextSourceType.ExcelFile,
-                //MimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                MimeType = "application/vnd.ms-excel",
-                FileExtension = ".xlsx",
-                FileName = "test.xlsx",
-                RawData = assembly.GetManifestResourceStream("TextParsingLibPOC.test1.xlsx")
-            });
+            //_log.LogInformation("Parsing text file stream now....");
+            ////Example using text file stream
+            //var result1 = await _manager.ParseTextFromSource(new ParseStreamRequest
+            //{
+            //    SourceFormat = TextSourceType.RawTextLines,
+            //    MimeType = "text/plain",
+            //    FileExtension = ".txt",
+            //    FileName = "test1.txt",
+            //    RawData = assembly.GetManifestResourceStream("TextParsingLibPOC.test1.txt")
+            //});
 
-            _log.LogInformation("Parsing Pdf file stream now....");
-            //Example using pdf file stream
-            var result3 = await _manager.ParseTextFromSource(new ParseStreamRequest
-            {
-                SourceFormat = TextSourceType.PdfFile,
-                MimeType = "application/pdf",
-                FileExtension = ".pdf",
-                FileName = "test.pdf",
-                RawData = assembly.GetManifestResourceStream("TextParsingLibPOC.test1.pdf")
-            });
+            //_log.LogInformation("Parsing Excel file stream now....");
+            ////Example using excel file stream
+            //var result2 = await _manager.ParseTextFromSource(new ParseStreamRequest
+            //{
+            //    SourceFormat = TextSourceType.ExcelFile,
+            //    MimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            //    //MimeType = "application/vnd.ms-excel",
+            //    FileExtension = ".xlsx",
+            //    FileName = "test.xlsx",
+            //    RawData = assembly.GetManifestResourceStream("TextParsingLibPOC.test1.xlsx")
+            //});
+
+            //_log.LogInformation("Parsing Pdf file stream now....");
+            ////Example using pdf file stream
+            //var result3 = await _manager.ParseTextFromSource(new ParseStreamRequest
+            //{
+            //    SourceFormat = TextSourceType.PdfFile,
+            //    MimeType = "application/pdf",
+            //    FileExtension = ".pdf",
+            //    FileName = "test.pdf",
+            //    RawData = assembly.GetManifestResourceStream("TextParsingLibPOC.test1.pdf")
+            //});
 
             Console.WriteLine("Now to display the results...");
             Console.WriteLine();
@@ -68,11 +81,14 @@ namespace TextParsingLibPOC
             OutputResults(result);
             Console.WriteLine();
 
-            OutputResults(result2);
-            Console.WriteLine();
+            //OutputResults(result1);
+            //Console.WriteLine();
 
-            OutputResults(result3);
-            Console.WriteLine();
+            //OutputResults(result2);
+            //Console.WriteLine();
+
+            //OutputResults(result3);
+            //Console.WriteLine();
 
             Console.WriteLine();
             Console.WriteLine("Hit any key to exit.");

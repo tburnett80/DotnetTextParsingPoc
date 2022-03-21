@@ -7,12 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="test1.docx" />
     <None Remove="test1.pdf" />
     <None Remove="test1.txt" />
     <None Remove="test1.xlsx" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="test1.docx" />
     <EmbeddedResource Include="test1.pdf" />
     <EmbeddedResource Include="test1.txt" />
     <EmbeddedResource Include="test1.xlsx" />
